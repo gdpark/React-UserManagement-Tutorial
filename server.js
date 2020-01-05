@@ -29,7 +29,7 @@ app.use('/image', express.static('./upload'));
 // 이미지 경로가 실제 서버의 upload 폴더와 매핑이 된다.
 
 app.post('/api/customers',upload.single('image'), (req,res)=>{
-    let sql = 'INSERT INTO customer VALUES (null,?,?,?,?,?)';
+    let sql = 'INSERT INTO customer VALUES (null,?,?,?,?,?,now(),0)';
     let image = '/image/'+req.file.filename;
     // multer 가 알아서 이름을 정해줌.
     let name = req.body.name;
@@ -53,7 +53,7 @@ app.post('/api/customers',upload.single('image'), (req,res)=>{
 
 app.get('/api/customers', (req, res) => {
     connection.query(
-        'SELECT * FROM CUSTOMER',
+        "SELECT * FROM CUSTOMER where isDeleted = 0",
         (err, rows, fields) => {
             res.send(rows);
 
@@ -63,7 +63,15 @@ app.get('/api/customers', (req, res) => {
     )
 });
 
-
+app.delete('/api/customers/:id',(req,res) => {
+    let sql = 'UPDATE CUSTOMER SET isDeleted  = 1 WHERE  id = ?';
+    let params = [req.params.id];
+    connection.query(sql, params,
+        (err, rows, fields) => {
+            res.send(rows);
+            console.log("Delete List Query: "+err);
+        })
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
