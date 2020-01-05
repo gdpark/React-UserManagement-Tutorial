@@ -19,11 +19,46 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
+const multer = require('multer');
+const upload = multer({dest: './upload'})
+
+// const multer = require('multer');
+// const upload = multer({dist: './upload'});
+
+app.use('/image', express.static('./upload'));
+// 이미지 경로가 실제 서버의 upload 폴더와 매핑이 된다.
+
+app.post('/api/customers',upload.single('image'), (req,res)=>{
+    let sql = 'INSERT INTO customer VALUES (null,?,?,?,?,?)';
+    let image = '/image/'+req.file.filename;
+    // multer 가 알아서 이름을 정해줌.
+    let name = req.body.name;
+    let birthday = req.body.birthday;
+    let gender = req.body.gender;
+    let job = req.body.job;
+
+    let params = [image, name, birthday, gender, job];
+
+    console.log("run query");
+
+    connection.query(sql,params, (err,rows,fields) =>{
+        res.send(rows);
+        if(err){
+            console.log(err);
+        }
+        
+    });
+
+});
+
 app.get('/api/customers', (req, res) => {
     connection.query(
         'SELECT * FROM CUSTOMER',
         (err, rows, fields) => {
             res.send(rows);
+
+            console.log("Reload List Query: ");
+
         }
     )
 });
