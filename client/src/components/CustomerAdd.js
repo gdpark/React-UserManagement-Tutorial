@@ -2,7 +2,7 @@ import React from 'react';
 import {post} from 'axios';
 
 class CustomerAdd extends React.Component{
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             file: null,
@@ -18,6 +18,7 @@ class CustomerAdd extends React.Component{
         e.preventDefault()
         this.addCustomer().then((response)=>{
             console.log(response.data);
+            this.props.stateRefresh();
         })
         this.setState({
             file: null,
@@ -27,7 +28,8 @@ class CustomerAdd extends React.Component{
             job: '',
             fileName:''
         })
-        window.location.reload();
+       
+       // window.location.reload();
     }
 
     handleFileChange = (e) => {
