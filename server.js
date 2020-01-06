@@ -29,7 +29,7 @@ app.use('/image', express.static('./upload'));
 // 이미지 경로가 실제 서버의 upload 폴더와 매핑이 된다.
 
 app.post('/api/customers',upload.single('image'), (req,res)=>{
-    let sql = 'INSERT INTO customer VALUES (null,?,?,?,?,?,now(),0)';
+    let sql = 'INSERT INTO customer VALUES (0,?,?,?,?,?,now(),null,0)';
     let image = '/image/'+req.file.filename;
     // multer 가 알아서 이름을 정해줌.
     let name = req.body.name;
